@@ -1,4 +1,4 @@
 FROM python:3.9
-COPY src/ /app/
+COPY main.py /app/
 WORKDIR /app
 CMD ["python", "main.py"]
