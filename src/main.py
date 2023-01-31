@@ -1,2 +1,2 @@
 # src/main.py
-print("Hello, World!")
+print("Hai, World!")
