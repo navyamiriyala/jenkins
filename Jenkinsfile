@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        buildNumber = "${BUILD_NUMBER}"
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -19,5 +22,23 @@ pipeline {
                 sh 'docker run hello-world-python'
             }
         }
+        stage('Create Release Tag') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: '14c7df31-5ae0-48e5-a5f0-87fbf6494f28', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
+                    sh '''
+//                    // git config --global user.email "ajithkumar.kannappan@continuuminnovations.com"
+//                    // git config --global user.name "ajith-continuum"
+                    git checkout -b release
+                    git tag v${buildNumber}
+                    git push https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/continuuminnovations-com/jenkins-code.git v${buildNumber}
+                    '''
+                }
+            }
+        }
+        stage('Clone Release Tag') {
+            steps {
+                sh "git clone git@github.com/continuuminnovations-com/jenkins-code.git -b v${buildNumber}"
+            }
+        }
     }
 }
