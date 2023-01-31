@@ -1,7 +1,7 @@
 pipeline {
-    agent any
-    environment {
-      buildNumber = "${BUILD_NUMBER}"
+  agent any
+  environment {
+    buildNumber = "${BUILD_NUMBER}"
     }
     stages {
         stage('Checkout') {
