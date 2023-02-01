@@ -4,12 +4,12 @@ pipeline {
         version = "v1.0.0"
         github_org = "navyamiriyala"
         repository = "jenkins"
-        githubToken = "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"
+//         githubToken = "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"
     }
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '0395be83-fd6e-4740-9fba-a55dc5db0073', url: 'https://github.com/navyamiriyala/jenkins.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'a11c912d-fdd7-4de2-906c-5878fafd6b62', url: 'https://github.com/navyamiriyala/jenkins.git']]])
             }
         }
         stage('Create Git Tag') {
@@ -32,7 +32,7 @@ pipeline {
                     def minor = parts[1].toInteger()
                     def patch = parts[2].toInteger()
                     def newVersion = "v${major}.${minor}.${patch + env.BUILD_NUMBER}"
-                    withCredentials([usernamePassword(credentialsId: "0395be83-fd6e-4740-9fba-a55dc5db0073", passwordVariable: "githubPassword", usernameVariable: "githubUsername")]) {
+                    withCredentials([usernamePassword(credentialsId: "a11c912d-fdd7-4de2-906c-5878fafd6b62", passwordVariable: "githubPassword", usernameVariable: "githubUsername")]) {
                         sh "git push https://${githubUsername}:${githubPassword}@github.com/navyamiriyala/jenkins.git ${newVersion}"
                     }
                 }
