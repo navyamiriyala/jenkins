@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Create Release Tag') {
            steps {
-             withCredentials([usernamePassword(credentialsId: 'github-token', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
+             withCredentials([usernamePassword(credentialsId: '661ec668-29c9-459b-a9ca-856cde7210ce', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
                sh '''
                git checkout -b release
                git tag v${buildNumber}
@@ -33,10 +33,10 @@ pipeline {
              }
           }
         }
-        stage('Clone Release Tag') {
-          steps {
-            sh "git clone git@github.com:continuuminnovations-com/jenkins-code.git -b v${buildNumber}"
-          }
-        }
+//         stage('Clone Release Tag') {
+//           steps {
+//             sh "git clone git@github.com:continuuminnovations-com/jenkins-code.git -b v${buildNumber}"
+//           }
+//         }
       }
    }
