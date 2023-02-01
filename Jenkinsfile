@@ -3,8 +3,10 @@ pipeline {
   environment {
     buildNumber = "${BUILD_NUMBER}"
   }
-  docker {
+ agent {
+    docker {
       image 'docker.io/library/git:latest'
+    }
   }
     stages {
         stage('Checkout') {
