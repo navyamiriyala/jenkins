@@ -26,7 +26,7 @@ pipeline {
            steps {
              withCredentials([usernamePassword(credentialsId: '038d6150-b196-45a7-9b38-6b1f0d559d02', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
                sh '''
-               git checkout -b new-release15
+               git checkout -b new-release16
                git tag v${buildNumber}
                git push https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/navyamiriyala/jenkins.git v${buildNumber}
                '''
