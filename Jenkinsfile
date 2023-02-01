@@ -3,6 +3,9 @@ pipeline {
   environment {
     buildNumber = "${BUILD_NUMBER}"
   }
+  docker {
+      image 'docker.io/library/git:latest'
+  }
     stages {
         stage('Checkout') {
             steps {
