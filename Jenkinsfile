@@ -33,7 +33,7 @@ pipeline {
              }
           }
         stage('Clone Release Tag') {
-           steps {
+          steps {
               sh "git clone git@github.com:continuuminnovations-com/jenkins-code.git -b v${buildNumber}"
             }
         }
