@@ -4,12 +4,12 @@ pipeline {
         version = "v1.0.0"
         github_org = "navyamiriyala"
         repository = "jenkins"
-        githubToken = "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"
+        githubToken = "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"
     }
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'f4fcd66b-8d89-4212-a554-d814019886ed', url: 'https://github.com/navyamiriyala/jenkins.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '0395be83-fd6e-4740-9fba-a55dc5db0073', url: 'https://github.com/navyamiriyala/jenkins.git']]])
             }
         }
         stage('Create Git Tag') {
@@ -20,8 +20,7 @@ pipeline {
                     def minor = parts[1].toInteger()
                     def patch = parts[2].toInteger()
                     def newVersion = "v${major}.${minor}.${patch + env.BUILD_NUMBER}"
-                    git tag "${newVersion}"
-                    def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
+                    sh "git tag -a ${newVersion} -m 'Tag created by Jenkins build'"
                 }
             }
         }
@@ -33,8 +32,8 @@ pipeline {
                     def minor = parts[1].toInteger()
                     def patch = parts[2].toInteger()
                     def newVersion = "v${major}.${minor}.${patch + env.BUILD_NUMBER}"
-                    withCredentials([usernamePassword(credentialsId: "f4fcd66b-8d89-4212-a554-d814019886ed", passwordVariable: "githubPassword", usernameVariable: "githubUsername")]) {
-                        git push "https://${githubUsername}:${githubPassword}@github.com/navyamiriyala/jenkins.git" "${newVersion}"
+                    withCredentials([usernamePassword(credentialsId: "0395be83-fd6e-4740-9fba-a55dc5db0073", passwordVariable: "githubPassword", usernameVariable: "githubUsername")]) {
+                        sh "git push "https://${githubUsername}:${githubPassword}@github.com/navyamiriyala/jenkins.git ${newVersion}"
                     }
                 }
             }
