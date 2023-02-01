@@ -33,7 +33,7 @@ pipeline {
                     def patch = parts[2].toInteger()
                     def newVersion = "v${major}.${minor}.${patch + BUILD_NUMBER}"
                     withCredentials([usernamePassword(credentialsId: "f4fcd66b-8d89-4212-a554-d814019886ed", passwordVariable: "githubPassword", usernameVariable: "githubUsername")]) {
-                        git push https://${githubUsername}:${githubPassword}@github.com/navyamiriyala/jenkins.git ${newVersion}
+                       sh "git push https://${githubUsername}:${githubPassword}@github.com/navyamiriyala/jenkins.git ${newVersion}"
                     }
                 }
             }
