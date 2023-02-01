@@ -21,7 +21,7 @@ pipeline {
                     def patch = parts[2].toInteger()
                     def newVersion = "v${major}.${minor}.${patch + BUILD_NUMBER}"
                     git tag "${newVersion}"
-                    git describe --abbrev=0 --tags
+                    def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
                 }
             }
         }
