@@ -20,7 +20,8 @@ pipeline {
                     def minor = parts[1].toInteger()
                     def patch = parts[2].toInteger()
                     def newVersion = "v${major}.${minor}.${patch + BUILD_NUMBER}"
-                    sh "git tag -a ${newVersion} -m 'Tag created by Jenkins build'"
+                    git tag "${newVersion}"
+                    git describe --abbrev=0 --tags
                 }
             }
         }
@@ -33,7 +34,7 @@ pipeline {
                     def patch = parts[2].toInteger()
                     def newVersion = "v${major}.${minor}.${patch + BUILD_NUMBER}"
                     withCredentials([usernamePassword(credentialsId: "f4fcd66b-8d89-4212-a554-d814019886ed", passwordVariable: "githubPassword", usernameVariable: "githubUsername")]) {
-                       sh "git push https://${githubUsername}:${githubPassword}@github.com/navyamiriyala/jenkins.git ${newVersion}"
+                        git push "https://${githubUsername}:${githubPassword}@github.com/navyamiriyala/jenkins.git" "${newVersion}"
                     }
                 }
             }
@@ -48,16 +49,4 @@ pipeline {
                 
                 }
             }
-        }      
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t hello-world-python .'
-            }
-        }
-        stage('Run Docker Image') {
-            steps {
-                sh 'docker run hello-world-python'
-            }
-        } 
-      }
-   }
+       
