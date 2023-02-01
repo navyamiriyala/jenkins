@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Create Release Tag') {
            steps {
-              withCredentials([usernamePassword(credentialsId: 'github-token', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
+             withCredentials([usernamePassword(credentialsId: 'github-token', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
                  sh '''
                    git checkout -b release
                    git tag v${buildNumber}
