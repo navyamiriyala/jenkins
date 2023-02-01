@@ -1,11 +1,11 @@
 pipeline {
   agent any
-  environment {
-    buildNumber = "${BUILD_NUMBER}"
-  }
     docker {
       image 'docker.io/library/git:latest'
     }
+  environment {
+    buildNumber = "${BUILD_NUMBER}"
+  }
     stages {
         stage('Checkout') {
             steps {
