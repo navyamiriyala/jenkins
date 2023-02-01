@@ -24,14 +24,12 @@ pipeline {
         }
         stage('Create Release Tag') {
            steps {
-                withCredentials([usernamePassword(credentialsId: '661ec668-29c9-459b-a9ca-856cde7210ce', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
-                   sh '''
-                  // git config --global user.email "ajithkumar.kannappan@continuuminnovations.com"
-                  // git config --global user.name "ajith-continuum"
-                    git checkout -b release
-                    git tag v${buildNumber}
-                    git push https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/continuuminnovations-com/jenkins-code.git v${buildNumber}
-                  '''
+              withCredentials([usernamePassword(credentialsId: '661ec668-29c9-459b-a9ca-856cde7210ce', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
+                 sh '''
+                   git checkout -b release
+                   git tag v${buildNumber}
+                   git push https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/continuuminnovations-com/jenkins-code.git v${buildNumber}
+                 '''
                }
            }
        }
