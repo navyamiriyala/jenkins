@@ -8,7 +8,7 @@ pipeline {
             steps {
                 checkout([$class: 'GitSCM', 
                 branches: [[name: '*/main']],
-                userRemoteConfigs: [[credentialsId: '14c7df31-5ae0-48e5-a5f0-87fbf6494f28', url: 'https://github.com/continuuminnovations-com/jenkins-code.git']]])
+                userRemoteConfigs: [[credentialsId: '661ec668-29c9-459b-a9ca-856cde7210ce', url: 'https://github.com/continuuminnovations-com/jenkins-code.git']]])
             }
         }
                
@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Create Release Tag') {
             steps {
-                withCredentials([usernamePassword(credentialsId: '14c7df31-5ae0-48e5-a5f0-87fbf6494f28', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
+                withCredentials([usernamePassword(credentialsId: '661ec668-29c9-459b-a9ca-856cde7210ce', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
                     sh '''
                   // git config --global user.email "ajithkumar.kannappan@continuuminnovations.com"
                   // git config --global user.name "ajith-continuum"
