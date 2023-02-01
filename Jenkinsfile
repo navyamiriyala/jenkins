@@ -8,7 +8,7 @@ pipeline {
             steps {
                 checkout([$class: 'GitSCM', 
                 branches: [[name: '*/main']],
-                userRemoteConfigs: [[credentialsId: '661ec668-29c9-459b-a9ca-856cde7210ce', url: 'https://github.com/continuuminnovations-com/jenkins-code.git']]])
+                userRemoteConfigs: [[credentialsId: 'd2c1f508-ec5d-4b04-9446-d2334d2f29f4', url: 'https://github.com/continuuminnovations-com/jenkins-code.git']]])
             }
         }
                
@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Create Release Tag') {
            steps {
-             withCredentials([usernamePassword(credentialsId: '661ec668-29c9-459b-a9ca-856cde7210ce', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
+             withCredentials([usernamePassword(credentialsId: 'd2c1f508-ec5d-4b04-9446-d2334d2f29f4', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USERNAME')]) {
                sh '''
                git checkout -b release
                git tag v${buildNumber}
