@@ -4,14 +4,11 @@ pipeline {
         version = "v1.0.0"
         github_org = "navyamiriyala"
         repository = "jenkins"
-//         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-//         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-//         githubToken = "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"
     }
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '867e15f7-7bc7-4db0-86b7-fffc593024ac', url: 'https://github.com/navyamiriyala/jenkins.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GITHUB_CREDENTIALS_ID', url: 'https://github.com/navyamiriyala/jenkins.git']]])
             }
         }
         stage('Create Git Tag') {
@@ -32,11 +29,9 @@ pipeline {
 		      sh """
 		        export GITHUB_TOKEN=$(aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text --region us-west-1 --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY)
 		      """
+		   }
 		}
 	}
-}
-
-
         stage('Push Git Tag') {
             steps {
                 script {
@@ -45,7 +40,7 @@ pipeline {
                     def minor = parts[1].toInteger()
                     def patch = parts[2].toInteger()
                     def newVersion = "v${major}.${minor}.${patch + env.BUILD_NUMBER}"
-                    withCredentials([usernamePassword(credentialsId: "867e15f7-7bc7-4db0-86b7-fffc593024ac", passwordVariable: "githubPassword", usernameVariable: "githubUsername")]) {
+                    withCredentials([usernamePassword(credentialsId: "GITHUB_CREDENTIALS_ID", passwordVariable: "githubPassword", usernameVariable: "githubUsername")]) {
                         sh "git push https://${githubUsername}:${githubPassword}@github.com/navyamiriyala/jenkins.git ${newVersion}"
                     }
                 }
@@ -57,9 +52,9 @@ pipeline {
                     // Retrieve the latest tag from the GitHub repository
                     def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
                     echo "Latest tag: ${latestTag}"
-                    sh "curl -X POST -H 'Authorization: token ${GITHUB_TOKEN}' -H 'Content-Type: application/json' -d '{\"tag_name\":\"${latestTag}\",\"target_commitish\": \"main\",\"name\": \"${latestTag}\",\"body\": \"Release created by Jenkins\",\"draft\": false,\"prerelease\": false}' https://api.github.com/repos/${github_org}/${repository}/releases"       
-                }
-            }
+                    sh "curl -X POST -H 'Authorization: token ${GITHUB_TOKEN}' -H 'Content-Type: application/json'
+		}
+	    }
 	}
         stage('Build Docker Image') {
                   steps {
