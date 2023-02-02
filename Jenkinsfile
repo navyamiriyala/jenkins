@@ -4,6 +4,8 @@ pipeline {
         version = "v1.0.0"
         github_org = "navyamiriyala"
         repository = "jenkins"
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
 //         githubToken = "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"
     }
     stages {
@@ -60,7 +62,8 @@ pipeline {
               } 
         stage('Push to ECR') {
             steps {
-                withAWS(credentials: 'my-aws-credentials') {
+                withCredentials([string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                       string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
 //                     sh 'docker build -t my-image .'
                     sh 'docker tag jenkins:latest 015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins:latest'
