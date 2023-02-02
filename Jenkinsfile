@@ -6,7 +6,7 @@ pipeline {
         repository = "jenkins"
 //         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
 //         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-        githubToken = "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"
+//         githubToken = "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"
     }
     stages {
         stage('Checkout') {
@@ -26,6 +26,15 @@ pipeline {
                 }
             }
         }
+	stage("Retrieve GitHub Token") {
+            steps {
+                withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', accessKeyIdVariable: 'AWS_ACCESS_KEY_ID', secretAccessKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh """
+                        export GITHUB_TOKEN=$(aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text --region us-west-1 --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY)
+                    """
+                }
+            }
+        }
         stage('Push Git Tag') {
             steps {
                 script {
@@ -46,7 +55,7 @@ pipeline {
                     // Retrieve the latest tag from the GitHub repository
                     def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
                     echo "Latest tag: ${latestTag}"
-                    sh "curl -X POST -H 'Authorization: token ${githubToken}' -H 'Content-Type: application/json' -d '{\"tag_name\":\"${latestTag}\",\"target_commitish\": \"main\",\"name\": \"${latestTag}\",\"body\": \"Release created by Jenkins\",\"draft\": false,\"prerelease\": false}' https://api.github.com/repos/${github_org}/${repository}/releases"       
+                    sh "curl -X POST -H 'Authorization: token ${GITHUB_TOKEN}' -H 'Content-Type: application/json' -d '{\"tag_name\":\"${latestTag}\",\"target_commitish\": \"main\",\"name\": \"${latestTag}\",\"body\": \"Release created by Jenkins\",\"draft\": false,\"prerelease\": false}' https://api.github.com/repos/${github_org}/${repository}/releases"       
                 }
             }
 	}
