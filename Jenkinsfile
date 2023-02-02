@@ -49,17 +49,17 @@ pipeline {
                     sh "curl -X POST -H 'Authorization: token ${githubToken}' -H 'Content-Type: application/json' -d '{\"tag_name\":\"${latestTag}\",\"target_commitish\": \"main\",\"name\": \"${latestTag}\",\"body\": \"Release created by Jenkins\",\"draft\": false,\"prerelease\": false}' https://api.github.com/repos/${github_org}/${repository}/releases"       
                 }
             }
-	     }
+	}
         stage('Build Docker Image') {
                   steps {
                       sh 'docker build -t hello-world-python .'
                   }
-              }
+         }
          stage('Run Docker Image') {
                   steps {
                       sh 'docker run hello-world-python'
                   }
-              } 
+        } 
         stage('Push to ECR') {
             steps {
                 withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
