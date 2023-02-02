@@ -6,7 +6,7 @@ pipeline {
         repository = "jenkins"
 //         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
 //         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-//         githubToken = "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"
+        githubToken = "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"
     }
     stages {
         stage('Checkout') {
@@ -40,16 +40,16 @@ pipeline {
                 }
             }
         }
-//         stage("Create GitHub Release") {
-//             steps {
-//                 script {
-//                     // Retrieve the latest tag from the GitHub repository
-//                     def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
-//                     echo "Latest tag: ${latestTag}"
-//                     sh "curl -X POST -H 'Authorization: token ${githubToken}' -H 'Content-Type: application/json' -d '{\"tag_name\":\"${latestTag}\",\"target_commitish\": \"main\",\"name\": \"${latestTag}\",\"body\": \"Release created by Jenkins\",\"draft\": false,\"prerelease\": false}' https://api.github.com/repos/${github_org}/${repository}/releases"       
-//                 }
-//             }
-// 	}
+        stage("Create GitHub Release") {
+            steps {
+                script {
+                    // Retrieve the latest tag from the GitHub repository
+                    def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
+                    echo "Latest tag: ${latestTag}"
+                    sh "curl -X POST -H 'Authorization: token ${githubToken}' -H 'Content-Type: application/json' -d '{\"tag_name\":\"${latestTag}\",\"target_commitish\": \"main\",\"name\": \"${latestTag}\",\"body\": \"Release created by Jenkins\",\"draft\": false,\"prerelease\": false}' https://api.github.com/repos/${github_org}/${repository}/releases"       
+                }
+            }
+	     }
         stage('Build Docker Image') {
                   steps {
                       sh 'docker build -t hello-world-python .'
