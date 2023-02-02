@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'a11c912d-fdd7-4de2-906c-5878fafd6b62', url: 'https://github.com/navyamiriyala/jenkins.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '33e7d5ef-1266-4e01-99d6-cf99c557a1db', url: 'https://github.com/navyamiriyala/jenkins.git']]])
             }
         }
         stage('Create Git Tag') {
@@ -32,7 +32,7 @@ pipeline {
                     def minor = parts[1].toInteger()
                     def patch = parts[2].toInteger()
                     def newVersion = "v${major}.${minor}.${patch + env.BUILD_NUMBER}"
-                    withCredentials([usernamePassword(credentialsId: "a11c912d-fdd7-4de2-906c-5878fafd6b62", passwordVariable: "githubPassword", usernameVariable: "githubUsername")]) {
+                    withCredentials([usernamePassword(credentialsId: "33e7d5ef-1266-4e01-99d6-cf99c557a1db", passwordVariable: "githubPassword", usernameVariable: "githubUsername")]) {
                         sh "git push https://${githubUsername}:${githubPassword}@github.com/navyamiriyala/jenkins.git ${newVersion}"
                     }
                 }
@@ -44,9 +44,19 @@ pipeline {
 //                     // Retrieve the latest tag from the GitHub repository
 //                     def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
 //                     echo "Latest tag: ${latestTag}"
-//                     sh "curl -X POST -H 'Authorization: token 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' -H 'Content-Type: application/json' -d '{\"tag_name\":\"${latestTag}\",\"target_commitish\": \"main\",\"name\": \"${latestTag}\",\"body\": \"Release created by Jenkins\",\"draft\": false,\"prerelease\": false}' https://api.github.com/repos/${github_org}/${repository}/releases"       
+//                     sh "curl -X POST -H 'Authorization: token ${githubToken}' -H 'Content-Type: application/json' -d '{\"tag_name\":\"${latestTag}\",\"target_commitish\": \"main\",\"name\": \"${latestTag}\",\"body\": \"Release created by Jenkins\",\"draft\": false,\"prerelease\": false}' https://api.github.com/repos/${github_org}/${repository}/releases"       
 //                 }
 //             }
 // 	}
+        stage('Build Docker Image') {
+                  steps {
+                      sh 'docker build -t hello-world-python .'
+                  }
+              }
+              stage('Run Docker Image') {
+                  steps {
+                      sh 'docker run hello-world-python'
+                  }
+              } 
     }
 }
