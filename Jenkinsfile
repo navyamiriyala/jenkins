@@ -52,7 +52,7 @@ pipeline {
                     // Retrieve the latest tag from the GitHub repository
                     def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
                     echo "Latest tag: ${latestTag}"
-                    sh "curl -X POST -H 'Authorization: token ${GITHUB_TOKEN}' -H 'Content-Type: application/json'
+                    sh "curl -X POST -H 'Authorization: token ${GITHUB_TOKEN}' -H 'Content-Type: application/json'"
 		}
 	    }
 	}
