@@ -4,8 +4,8 @@ pipeline {
         version = "v1.0.0"
         github_org = "navyamiriyala"
         repository = "jenkins"
-        AWS_ACCESS_KEY_ID = credentials('ASIAQHMAJ74RAZVZ5KWJ')
-        AWS_SECRET_ACCESS_KEY = credentials('Tut3Yb+N4tccmCZFiM6DXajFjmftlYTQptE1SQ85')
+        AWS_ACCESS_KEY_ID = credentials('AKIAQHMAJ74RDB7J3EW5')
+        AWS_SECRET_ACCESS_KEY = credentials('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')
 //         githubToken = "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"
     }
     stages {
