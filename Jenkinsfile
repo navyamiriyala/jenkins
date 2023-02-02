@@ -53,10 +53,20 @@ pipeline {
                       sh 'docker build -t hello-world-python .'
                   }
               }
-              stage('Run Docker Image') {
+         stage('Run Docker Image') {
                   steps {
                       sh 'docker run hello-world-python'
                   }
               } 
+        stage('Push to ECR') {
+            steps {
+                withAWS(credentials: 'my-aws-credentials') {
+                    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
+//                     sh 'docker build -t my-image .'
+                    sh 'docker tag jenkins:latest 015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins:latest'
+                    sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins:latest'
+                }
+            }
+        }
     }
 }
