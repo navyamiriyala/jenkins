@@ -27,7 +27,7 @@ pipeline {
 		steps {
 		   withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', accessKeyIdVariable: 'AWS_ACCESS_KEY_ID', secretAccessKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
 		      sh """
-		        export GITHUB_TOKEN=$(aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text --region us-west-1 --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY)
+		        export GITHUB_TOKEN=${aws secretsmanager get-secret-value --secret-id github-token --query SecretString --output text --region us-west-1 --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY}
 		      """
 		   }
 		}
