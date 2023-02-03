@@ -71,7 +71,7 @@ pipeline {
 	}
 	stage("Update ECS Task Definition") {
             steps {
-                withAWS(credentials: 'my-aws-credentials') {
+                withAWS(credentials: 'AWS_ACCESS_KEY_ID') {
                     def taskDefinition = sh(returnStdout: true, script: 'aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 --region us-east-1')
                     def newTaskDefinition = readJSON text: taskDefinition
                     newTaskDefinition['taskDefinition']['containerDefinitions'][0]['image'] = "015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest"
