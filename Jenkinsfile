@@ -56,18 +56,18 @@ pipeline {
 // 		  sh "docker build --tag ${REPOSITORY_URI}:${latestTag} ."
 	    }
 	} 
-// 	stage('Push to ECR') {
-// 	    steps {
-// 		withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-// 		    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
-// // 		    sh 'systemctl start docker'
-// // 		    sh "docker tag hello-world-python:${latestTag} ${REPOSITORY_URI}:${latestTag}"
-// 	            sh 'docker tag jenkinstest:latest 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
-//                     sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
-// // 		    sh "docker push ${REPOSITORY_URI}:${latestTag}"
-// 		}
-// 	    }
-// 	}
+	stage('Push to ECR') {
+	    steps {
+		withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
+		    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
+// 		    sh 'systemctl start docker'
+// 		    sh "docker tag hello-world-python:${latestTag} ${REPOSITORY_URI}:${latestTag}"
+	            sh 'docker tag jenkinstest:latest 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
+                    sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
+// 		    sh "docker push ${REPOSITORY_URI}:${latestTag}"
+		}
+	    }
+	}
 // // 	stage('Deploy to ECS') {
 // // 	      steps {
 // // 		withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
