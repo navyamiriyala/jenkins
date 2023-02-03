@@ -72,7 +72,7 @@ pipeline {
 	stage('Deploy to ECS') {
 	      steps {
 		withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-		  sh 'aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321:1'
+		  sh 'aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321:1 --force-new-deployment --region ${AWS_REGION}'
 		}
 	      }
 	    }
