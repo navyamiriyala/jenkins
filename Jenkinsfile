@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '867e15f7-7bc7-4db0-86b7-fffc593024ac', url: 'https://github.com/navyamiriyala/jenkins.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'f51e92ff-8258-4278-b04f-0228c352d371321', url: 'https://github.com/navyamiriyala/jenkins.git']]])
             }
         }
         stage('Create Git Tag') {
@@ -61,9 +61,10 @@ pipeline {
 		withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
 		    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
 // 		    sh 'systemctl start docker'
+	            def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
 // 		    sh "docker tag hello-world-python:${latestTag} ${REPOSITORY_URI}:${latestTag}"
-	            sh 'docker tag jenkinstest:latest 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
-                    sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
+	            sh 'docker tag jenkinstest:${latestTag} 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:${latestTag}'
+                    sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:${latestTag}'
 // 		    sh "docker push ${REPOSITORY_URI}:${latestTag}"
 		}
 	    }
