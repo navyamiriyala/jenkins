@@ -56,12 +56,12 @@ pipeline {
 // 		  sh "docker build --tag ${REPOSITORY_URI}:${latestTag} ."
 	    }
 	}
-	stage('Run Docker Image') {
-	    steps {
-		sh 'docker run jenkinstest'
-		sh 'kill $(jobs -p)'
-	    }
-	} 
+// 	stage('Run Docker Image') {
+// 	    steps {
+// 		sh 'docker run jenkinstest'
+// 		sh 'kill $(jobs -p)'
+// 	    }
+// 	} 
 	stage('Push to ECR') {
 	    steps {
 		withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
