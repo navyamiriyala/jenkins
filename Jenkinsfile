@@ -76,16 +76,20 @@ pipeline {
 //                 }
 //             }
 //         }
-	stage('Deploy to ECS') {
-	    steps {
-	       withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-		   sh '''
-		       def taskRevision = sh(script: "/usr/local/bin/aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 | egrep 'revision' | tr '/' ' ' | awk '{print \$2}' | sed 's/\"\$//'", returnStdout: true).trim()
-		   '''
-		   sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321:\${taskRevision} --force-new-deployment  --region us-east-1"
+        stage('Deploy to ECS') {
+            steps {
+                withEnv(['AWS_REGION=us-east-1']) {
+                    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
+                        sh """
+                        TASK_DEFINITION="inn-dev-td-0e6cf42e2321"
+                        CLUSTER="inn-dev-cluster-0e6cf42e2321"
+                        SERVICE="inn-dev-service-0e6cf42e2321"
+                        TASK_REVISION=$(aws ecs describe-task-definition --task-definition ${TASK_DEFINITION} | grep 'revision' | tr '/' ' ' | awk '{print $2}' | sed 's/\"$//')
+                        aws ecs update-service --cluster ${CLUSTER} --service ${SERVICE} --task-definition ${TASK_DEFINITION}:${TASK_REVISION} --force-new-deployment
+                        """
 	       }
-	    }
-	}
-
-    }
-}
+            }
+        }
+     }
+ }
+             
