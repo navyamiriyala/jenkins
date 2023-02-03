@@ -74,7 +74,7 @@ pipeline {
 		}
 	    }
 	}
-	stage('Deploy to ECS') {
+// 	stage('Deploy to ECS') {
 // 	      steps {
 // 		withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
 // 		  sh 'aws ecs update-service --cluster myCluster --service myService --task-definition myTaskDefinition'
