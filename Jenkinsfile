@@ -69,18 +69,22 @@ pipeline {
 		}
 	    }
 	}
-	stage("Update ECS Task Definition") {
-	      steps {
-		script {
-		  def taskDefinition = sh(returnStdout: true, script: "aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 --region us-east-1 --family inn-dev-td-0e6cf42e2321 --requires-compatibilities EC2 --network-mode bridge --cpu 10 --memory 300").trim()
-		  def json = readJSON text: taskDefinition
-		  def newTaskDefinition = json.taskDefinition
-		  newTaskDefinition.containerDefinitions[0].image = "015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest"
-		  sh "aws ecs register-task-definition --cli-input-json '${toJson(newTaskDefinition)}' --region us-east-1"
-		  sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321 --region <REGION>"
-		}
-	      }
-	    }
+        stage("Update ECS Task Definition") {
+            steps {
+                withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
+		    sh "cd /var/lib/jenkins/workspace/test"
+                    sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1 --family inn-dev-td-0e6cf42e2321 --network-mode bridge"
+                }
+            }
+        }
+        stage("Update ECS Service") {
+            steps {
+                withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
+                    sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321 --force-new-deployment --region us-east-1"
+                }
+            }
+        }
+
 
 //         stage('Deploy to ECS') {
 //             steps {
