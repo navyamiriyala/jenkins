@@ -5,6 +5,7 @@ pipeline {
         version = "v1.0.0"
         github_org = "navyamiriyala"
         repository = "jenkins"
+	REPOSITORY_URI=015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins
     }
     stages {
         stage('Checkout') {
@@ -52,7 +53,7 @@ pipeline {
         }
 	stage('Build Docker Image') {
                   steps {
-                      sh 'docker build -t hello-world-python .'
+                      sh 'docker build --tag $REPOSITORY_URI:${latestTag} .'
                   }
          }
          stage('Run Docker Image') {
@@ -65,8 +66,8 @@ pipeline {
                 withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
                     sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
                     sh 'docker images'
-                    sh 'docker tag hello-world-python:${TAG_NAME} 015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins:${TAG_NAME}'
-                    sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins:${TAG_NAME}'
+                    //sh 'docker tag hello-world-python:${latestTag} 015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins:${latestTag}'
+                    sh 'docker push $REPOSITORY_URI:${latestTag}'
                 }
             }
         }
