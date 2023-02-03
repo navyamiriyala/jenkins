@@ -72,7 +72,7 @@ pipeline {
 	stage("Update ECS Task Definition") {
             steps {
                 withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-                    sh "aws ecs register-task-definition --cli-input-json file://.task-definition.json --region us-east-1 --family inn-dev-td-0e6cf42e2321 --network-mode bridge"
+                    sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1 --family inn-dev-td-0e6cf42e2321 --network-mode bridge"
                 }
             }
         }
@@ -82,6 +82,6 @@ pipeline {
 		  sh 'aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321 --force-new-deployment  --region us-east-1'
 		}
 	      }
-	    }
+	   }
     }
 }
