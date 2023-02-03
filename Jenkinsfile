@@ -52,7 +52,7 @@ pipeline {
         }
 	stage('Build Docker Image') {
 	    steps {
-		  sh 'docker build -t hello-world-python .'
+		  sh 'docker build -t jenkinstest .'
 // 		  sh "docker build --tag ${REPOSITORY_URI}:${latestTag} ."
 	    }
 	}
@@ -67,8 +67,8 @@ pipeline {
 		    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
 // 		    sh 'systemctl start docker'
 // 		    sh "docker tag hello-world-python:${latestTag} ${REPOSITORY_URI}:${latestTag}"
-	            sh 'docker tag hello-world-python:latest 015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins:latest'
-                    sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins:latest'
+	            sh 'docker tag jenkinstest:latest 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
+                    sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
 // 		    sh "docker push ${REPOSITORY_URI}:${latestTag}"
 		}
 	    }
