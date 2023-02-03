@@ -60,8 +60,6 @@ pipeline {
 	    steps {
 		sh 'docker run jenkinstest'
 		sh 'kill $(jobs -p)'
-
-		
 	    }
 	} 
 	stage('Push to ECR') {
