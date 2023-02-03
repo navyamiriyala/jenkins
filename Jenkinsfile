@@ -64,7 +64,7 @@ pipeline {
 // 		    sh 'systemctl start docker'
 // 		    sh "docker tag hello-world-python:latest ${REPOSITORY_URI}:latest"
 	            sh 'docker tag jenkinstest:latest 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
-                    sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:$latest'
+                    sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
 // 		    sh "docker push ${REPOSITORY_URI}:${latestTag}"
 		}
 	    }
