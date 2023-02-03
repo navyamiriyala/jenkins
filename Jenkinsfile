@@ -72,7 +72,7 @@ pipeline {
 	stage("Update ECS Task Definition") {
 	      steps {
 		script {
-		  def taskDefinition = sh(returnStdout: true, script: "aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 --region us-east-1").trim()
+		  def taskDefinition = sh(returnStdout: true, script: "aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 --region us-east-1 --family inn-dev-td-0e6cf42e2321 --requires-compatibilities EC2 --network-mode bridge --cpu 10 --memory 300").trim()
 		  def json = readJSON text: taskDefinition
 		  def newTaskDefinition = json.taskDefinition
 		  newTaskDefinition.containerDefinitions[0].image = "015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest"
