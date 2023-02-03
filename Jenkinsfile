@@ -58,7 +58,10 @@ pipeline {
 	}
 	stage('Run Docker Image') {
 	    steps {
-		sh 'docker run hello-world-python'
+		sh 'docker run jenkinstest'
+		sh 'kill $(jobs -p)'
+
+		
 	    }
 	} 
 	stage('Push to ECR') {
