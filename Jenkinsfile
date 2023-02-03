@@ -70,15 +70,16 @@ pipeline {
 	    }
 	}
 	stage("Update ECS Task Definition") {
-	  steps {
-	    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-	      steps {
-		def taskRevision = sh(script: "/usr/local/bin/aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 | egrep \"revision\" | tr \"/\" \" \" | awk '{print \$2}' | sed 's/\"\$//'", returnStdout: true)
-		sh("/usr/local/bin/aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321:${taskRevision}")
-	      }
-	    }
-	  }
-	}
+            steps {
+                withAWS(credentials: 'my-aws-credentials') {
+                    def taskDefinition = sh(returnStdout: true, script: 'aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 --region us-east-1')
+                    def newTaskDefinition = readJSON text: taskDefinition
+                    newTaskDefinition['taskDefinition']['containerDefinitions'][0]['image'] = "015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest"
+                    sh "aws ecs register-task-definition --family inn-dev-td-0e6cf42e2321 --cli-input-json '${writeJSON(newTaskDefinition)}' --region us-east-1"
+                    sh 'aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321 --region us-east-1'
+                }
+            }
+        }
 
 //         stage('Deploy to ECS') {
 //             steps {
