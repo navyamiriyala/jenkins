@@ -70,8 +70,8 @@ pipeline {
 	    }
 	}
 	stage("Update ECS Task Definition") {
-            steps {
-                withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
+             withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
+		steps {
                     def taskRevision = sh(script: "/usr/local/bin/aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 | egrep \"revision\" | tr \"/\" \" \" | awk '{print \$2}' | sed 's/\"\$//'", returnStdout: true)
                     sh("/usr/local/bin/aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321:${taskRevision}")
                 }
