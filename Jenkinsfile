@@ -50,12 +50,12 @@ pipeline {
                 }
             }
         }
-// 	stage('Build Docker Image') {
-// 	    steps {
-// 		  sh 'docker build -t jenkinstest .'
-// // 		  sh "docker build --tag ${REPOSITORY_URI}:${latestTag} ."
-// 	    }
-// 	} 
+	stage('Build Docker Image') {
+	    steps {
+		  sh 'docker build -t jenkinstest .'
+// 		  sh "docker build --tag ${REPOSITORY_URI}:${latestTag} ."
+	    }
+	} 
 // 	stage('Push to ECR') {
 // 	    steps {
 // 		withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
