@@ -1,113 +1,64 @@
 {
-  "ipcMode": null,
-  "executionRoleArn": null,
+  "ipcMode": "host",
+  "executionRoleArn": "arn:aws:iam::015838347042:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
       "dnsSearchDomains": [],
-      "environmentFiles": [],
+      "environmentFiles": [
+        {
+          "value": "/var/task/env"
+        }
+      ],
       "logConfiguration": {
         "logDriver": "awslogs",
-        "secretOptions": [],
         "options": {
           "awslogs-group": "inn-dev-ecs-logs1",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs-task-logs-service1"
         }
       },
-      "entryPoint": [],
+      "entryPoint": [
+        "/usr/local/bin/docker-entrypoint.sh"
+      ],
       "portMappings": [
         {
-          "hostPort": 0,
+          "hostPort": 8080,
           "protocol": "tcp",
           "containerPort": 80
         }
       ],
-      "command": [],
-      "linuxParameters": null,
+      "command": [
+        "nginx",
+        "-g",
+        "daemon off;"
+      ],
       "cpu": 10,
-      "environment": [],
-      "resourceRequirements": null,
-      "ulimits": [],
-      "dnsServers": [],
-      "mountPoints": [],
-      "workingDirectory": null,
-      "secrets": [],
-      "dockerSecurityOptions": [],
+      "environment": [
+        {
+          "name": "ENV_VAR_1",
+          "value": "value1"
+        },
+        {
+          "name": "ENV_VAR_2",
+          "value": "value2"
+        }
+      ],
       "memory": 300,
-      "memoryReservation": null,
-      "volumesFrom": [],
-      "stopTimeout": null,
       "image": "015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:127503e",
-      "startTimeout": null,
-      "firelensConfiguration": null,
-      "dependsOn": null,
-      "disableNetworking": null,
-      "interactive": null,
-      "healthCheck": null,
       "essential": true,
-      "links": [],
-      "hostname": null,
-      "extraHosts": [],
-      "pseudoTerminal": null,
-      "user": null,
-      "readonlyRootFilesystem": null,
-      "dockerLabels": {},
-      "systemControls": [],
-      "privileged": null,
-      "name": "sample"
+      "name": "nginx-container"
     }
   ],
   "placementConstraints": [],
-  "memory": null,
-  "taskRoleArn": null,
+  "taskRoleArn": "arn:aws:iam::015838347042:role/ecsTaskExecutionRole",
   "compatibilities": [
-    "EXTERNAL",
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:us-east-1:015838347042:task-definition/inn-dev-td-0e6cf42e2321:1",
-  "family": "inn-dev-td-0e6cf42e2321",
-  "requiresAttributes": [
-    {
-      "targetId": null,
-      "targetType": null,
-      "value": null,
-      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-    },
-    {
-      "targetId": null,
-      "targetType": null,
-      "value": null,
-      "name": "com.amazonaws.ecs.capability.ecr-auth"
-    },
-    {
-      "targetId": null,
-      "targetType": null,
-      "value": null,
-      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-    },
-    {
-      "targetId": null,
-      "targetType": null,
-      "value": null,
-      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.17"
-    },
-    {
-      "targetId": null,
-      "targetType": null,
-      "value": null,
-      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-    }
-  ],
-  "pidMode": null,
+  "family": "nginx-task-definition",
   "requiresCompatibilities": [
     "EC2"
   ],
-  "networkMode": null,
-  "runtimePlatform": null,
-  "cpu": null,
-  "revision": 1,
-  "status": "ACTIVE",
-  "inferenceAccelerators": null,
-  "proxyConfiguration": null,
-  "volumes": []
+  "networkMode": "bridge",
+  "cpu": "512",
+  "revision": 1
 }
