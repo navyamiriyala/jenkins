@@ -80,13 +80,13 @@ pipeline {
             steps {
                 withEnv(['AWS_REGION=us-east-1']) {
                     withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-                        sh """
-                          TASK_DEFINITION="inn-dev-td-0e6cf42e2321"
-                          CLUSTER="inn-dev-cluster-0e6cf42e2321"
-                          SERVICE="inn-dev-service-0e6cf42e2321"
-                          TASK_REVISION=$(aws ecs describe-task-definition --task-definition ${TASK_DEFINITION} | grep 'revision' | tr '/' ' ' | awk '{print \$2}' | sed 's/\"$//') | sed 's/\"$//')
-                          aws ecs update-service --cluster ${CLUSTER} --service ${SERVICE} --task-definition ${TASK_DEFINITION}:${TASK_REVISION} --force-new-deployment
-                        """
+			    sh """
+				  TASK_DEFINITION="inn-dev-td-0e6cf42e2321"
+				  CLUSTER="inn-dev-cluster-0e6cf42e2321"
+				  SERVICE="inn-dev-service-0e6cf42e2321"
+				  TASK_REVISION=$(aws ecs describe-task-definition --task-definition ${TASK_DEFINITION} | grep 'revision' | tr '/' ' ' | awk '{print \$2}' | sed 's/\"$//') | sed 's/\"$//')
+				  aws ecs update-service --cluster ${CLUSTER} --service ${SERVICE} --task-definition ${TASK_DEFINITION}:${TASK_REVISION} --force-new-deployment
+                           """
 	     }
          }
       }
