@@ -65,8 +65,8 @@ pipeline {
                 withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
                     sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
                     sh 'docker images'
-                    sh 'docker tag hello-world-python:${latestTag} 015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins:${latestTag}'
-                    sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins:${latestTag}'
+                    sh 'docker tag hello-world-python:${TAG_NAME} 015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins:${TAG_NAME}'
+                    sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins:${TAG_NAME}'
                 }
             }
         }
