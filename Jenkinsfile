@@ -59,8 +59,8 @@ pipeline {
 	} 
 	stage('Push to ECR') {
 	    steps {
+		def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
 		withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-		    def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
 		    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
 // 		    sh 'systemctl start docker'
 		    sh "docker tag jenkinstest:${latestTag} ${REPOSITORY_URI}:${latestTag}"
