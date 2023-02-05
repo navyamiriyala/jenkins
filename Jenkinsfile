@@ -4,7 +4,7 @@ pipeline {
         version = "v3.0.0"
         github_org = "navyamiriyala"
         repository = "jenkins"
-// 	REPOSITORY_URI= "015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins"
+	REPOSITORY_URI= "015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt"
     }
     stages {
         stage('Checkout') {
@@ -52,6 +52,7 @@ pipeline {
         }
 	stage('Build Docker Image') {
 	    steps {
+// 		  def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
 		  sh 'docker build -t jenkinstest .'
 // 		  sh "docker build --tag ${REPOSITORY_URI}:${latestTag} ."
 	    }
@@ -59,13 +60,13 @@ pipeline {
 	stage('Push to ECR') {
 	    steps {
 		withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-// 		    def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
+		    def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
 		    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
 // 		    sh 'systemctl start docker'
-// 		    sh "docker tag hello-world-python:latest ${REPOSITORY_URI}:latest"
-	            sh 'docker tag jenkinstest:latest 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
-                    sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
-// 		    sh "docker push ${REPOSITORY_URI}:${latestTag}"
+		    sh "docker tag jenkinstest:${latestTag} ${REPOSITORY_URI}:${latestTag}"
+// 	            sh 'docker tag jenkinstest:latest 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
+//                     sh 'docker push 015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:latest'
+		    sh "docker push ${REPOSITORY_URI}:${latestTag}"
 		}
 	    }
 	}
