@@ -54,7 +54,7 @@ pipeline {
 	    steps {
 		script {
 		    def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
-		    sh "docker build -t jenkinstest::${latestTag} ."
+		    sh "docker build --tag jenkinstest:${latestTag} ."
 		}
 	    } 
 	}
