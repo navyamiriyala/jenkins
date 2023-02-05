@@ -52,7 +52,9 @@ pipeline {
         }
 	stage('Build Docker Image') {
 	    steps {
-		sh 'docker build -t jenkinstest .'
+		def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
+// 		sh 'docker build -t jenkinstest .'
+		sh "docker build --tag ${REPOSITORY_URI}:${latestTag} ."
 	    }
 	} 
 	stage('Push to ECR') {
@@ -61,7 +63,7 @@ pipeline {
 // 		def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
 		withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
 		    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
-		    sh "docker tag jenkinstest:latest ${REPOSITORY_URI}:${latestTag}"
+// 		    sh "docker tag jenkinstest:latest ${REPOSITORY_URI}:${latestTag}"
 		    sh "docker push ${REPOSITORY_URI}:${latestTag}"
 		}
 	    }
