@@ -52,11 +52,13 @@ pipeline {
         }
 	stage('Build Docker Image') {
 	    steps {
-// 		def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
-// 		sh 'docker build -t jenkinstest .'
-		sh "docker build --tag ${REPOSITORY_URI}:${latestTag} ."
-	    }
-	} 
+	        script {
+		   def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
+	// 	   sh 'docker build -t jenkinstest .'
+		   sh "docker build --tag ${REPOSITORY_URI}:${latestTag} ."
+		}
+	    } 
+	}
 	stage('Push to ECR') {
 	    steps {
 		echo "Latest tag: ${latestTag}"
