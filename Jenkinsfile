@@ -69,9 +69,6 @@ pipeline {
 	    steps {
 		script {
 		    import json
-
-		# ...
-
 		withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
 		    def imageTag = sh(returnStdout: true, script: 'aws ecr describe-images --repository-name jenkins-test --region us-east-1 --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]"').trim()
 		    sh "aws ecr describe-repositories --repository-name jenkins-test"
