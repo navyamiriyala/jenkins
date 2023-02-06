@@ -64,52 +64,45 @@ pipeline {
 		}
 	     } 
 	  }
-       }
-// 	stage('Push to ECR') {
-// 	    steps {
-// 		script {
-// 		    def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
-// 		    def timestamp = sh(returnStdout: true, script: "date +'%Y-%m-%d-%H-%M-%S'").trim()
-// 		    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-// 			sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
-// // 			sh "docker tag ${REPOSITORY_URI}:v${latestTag}-${timestamp} ${REPOSITORY_URI}:v${latestTag}-${timestamp}"
-// 			sh "docker push ${REPOSITORY_URI}:v${latestTag}-${timestamp}"
-// 		    }
-// 		}
-// 	    }
-// 	}
-// 	stage('Push to ECR') {
-// 	    steps {
-// 	       script {
-// 		   def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
-// 		   def timestamp = sh(returnStdout: true, script: "date +'%Y-%m-%d-%H-%M-%S'").trim()
-// 		   withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-// 		     sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
-// 		     sh "docker tag jenkinstest:v${latestTag}-${timestamp} ${REPOSITORY_URI}:v${latestTag}-${timestamp}"
-// 		     sh "docker push ${REPOSITORY_URI}:v${latestTag}-${timestamp}"
-// 		   }
-// 	      }
-// 	    }
-// 	}
-        stage("Update ECS Task Definition") {
-            steps {
+       }	
+	  stage('Pull and Deploy ECR Image') {
+	      steps {
 		script {
-		   def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
-                   withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-		      sh "cd /var/lib/jenkins/workspace/test"
-// 		      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1 --family inn-dev-td-0e6cf42e2321 --network-mode bridge --container-definitions \"$(jq --arg newImage \"${REPOSITORY_URI}:${latestTag}\" '.containerDefinitions[0].image = \$newImage' task-definition.json)\" > /dev/null"
-                      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1 --family inn-dev-td-0e6cf42e2321 --network-mode bridge"
-                 }
-	       }
-            }
-        }
-        stage("Update ECS Service") {
-            steps {
-                withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-                  sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321:28 --force-new-deployment --region us-east-1"
-             }
-          }
-        }
+		  def imageTag = sh(returnStdout: true, script: 'aws ecr describe-images --repository-name my-repo --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]"').trim()
+		  sh "aws ecr describe-repository --repository-name my-repo"
+		  sh "docker pull ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/my-repo:$imageTag"
+
+		  def taskDefinition = sh(returnStdout: true, script: 'aws ecs describe-task-definition --task-definition my-task-definition --query taskDefinition').trim()
+		  def newTaskDefinition = taskDefinition.replaceAll('(?<="image": ")(.*)(?=")', "${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/my-repo:$imageTag")
+		  sh "echo $newTaskDefinition > newTaskDefinition.json"
+		  sh "aws ecs register-task-definition --cli-input-json file://newTaskDefinition.json"
+		  sh "aws ecs update-service --cluster my-cluster --service my-service --task-definition my-task-definition"
+		}
+	      }
+	 }
+     }
+}
+
+
+//         stage("Update ECS Task Definition") {
+//             steps {
+// 		script {
+// 		   def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
+//                    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
+// 		      sh "cd /var/lib/jenkins/workspace/test"
+// // 		      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1 --family inn-dev-td-0e6cf42e2321 --network-mode bridge --container-definitions \"$(jq --arg newImage \"${REPOSITORY_URI}:${latestTag}\" '.containerDefinitions[0].image = \$newImage' task-definition.json)\" > /dev/null"
+//                       sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1 --family inn-dev-td-0e6cf42e2321 --network-mode bridge"
+//                  }
+// 	       }
+//             }
+//         }
+//         stage("Update ECS Service") {
+//             steps {
+//                 withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
+//                   sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321:28 --force-new-deployment --region us-east-1"
+//              }
+//           }
+//         }
 
 
 //         stage('Deploy to ECS') {
@@ -126,6 +119,6 @@ pipeline {
 // 	     }
 //          }
 //       }
-   }
- }
+//    }
+//  }
             
