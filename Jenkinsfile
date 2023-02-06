@@ -82,10 +82,10 @@ pipeline {
 			    sh "cat newTaskDefinition.json"
 			    sh "aws ecs register-task-definition --cli-input-json file://newTaskDefinition.json"
 			    sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321"
-			}
-		   }
-		}
-	   }
+		  }
+	       }
+             }
+	  }
 //         stage("Update ECS Task Definition") {
 //             steps {
 // 		script {
