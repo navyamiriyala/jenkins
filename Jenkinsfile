@@ -68,20 +68,27 @@ pipeline {
 	  stage('Pull and Deploy ECR Image') {
 	    steps {
 		script {
-		    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-			def imageTag = sh(returnStdout: true, script: 'aws ecr describe-images --repository-name jenkins-test --region us-east-1 --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]"').trim()
-			sh "aws ecr describe-repositories --repository-name jenkins-test"
-			sh "docker pull ${REPOSITORY_URI}:$imageTag"
-			def taskDefinition = sh(returnStdout: true, script: 'aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 --query taskDefinition').trim()
-			def newTaskDefinition = taskDefinition.replaceFirst('(?<="image": ")(.*)(?=")', "${REPOSITORY_URI}:$imageTag")
-                        sh "echo '$newTaskDefinition' > newTaskDefinition.json"
-			sh "cat newTaskDefinition.json | python -m json.tool > pretty.json"
-		        sh "cat pretty.json"
-			sh "aws ecs register-task-definition --cli-input-json file://pretty.json"
-			sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321"
-		    }
+		    import json
+
+		# ...
+
+		withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
+		    def imageTag = sh(returnStdout: true, script: 'aws ecr describe-images --repository-name jenkins-test --region us-east-1 --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]"').trim()
+		    sh "aws ecr describe-repositories --repository-name jenkins-test"
+		    sh "docker pull ${REPOSITORY_URI}:$imageTag"
+		    def taskDefinition = sh(returnStdout: true, script: 'aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 --query taskDefinition').trim()
+		    def newTaskDefinition = taskDefinition.replaceFirst('(?<="image": ")(.*)(?=")', "${REPOSITORY_URI}:$imageTag")
+
+		    # Use the `json` module to format `newTaskDefinition` as a valid JSON document
+		    formattedTaskDefinition = json.loads(newTaskDefinition)
+		    with open('newTaskDefinition.json', 'w') as outfile:
+			json.dump(formattedTaskDefinition, outfile, indent=4)
+
+		    sh "cat newTaskDefinition.json"
+		    sh "aws ecs register-task-definition --cli-input-json file://newTaskDefinition.json"
+		    sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321"
 		}
-	    }
+
 	}
      }
 }
