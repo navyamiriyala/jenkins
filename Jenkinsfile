@@ -73,7 +73,7 @@ pipeline {
 			sh "aws ecr describe-repositories --repository-name jenkins-test"
 			sh "docker pull ${REPOSITORY_URI}:$imageTag"
 			def taskDefinition = sh(returnStdout: true, script: 'aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 --query taskDefinition').trim()
-			def newTaskDefinition = taskDefinition.replaceFirst('(?<="image": ")(.*)(?=")', "${REPOSITORY_URI}:${imageTag}")
+			def newTaskDefinition = taskDefinition.replaceFirst('(?<="image": ".*:)(.*)(?=")', "$1")
 			sh "echo '$newTaskDefinition' > newTaskDefinition.json"
 // 			newTaskDefinition = newTaskDefinition.replace("\\", "")
 // 			def parsedJson = readJSON text: newTaskDefinition
