@@ -91,7 +91,7 @@ pipeline {
 		   def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
                    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
 		      sh "cd /var/lib/jenkins/workspace/test"
-		      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1 --family inn-dev-td-0e6cf42e2321 --network-mode bridge --container-definitions "$(sed "s#\".*image.*#\"image\": \"${REPOSITORY_URI}:${latestTag}\","#" task-definition.json)" > /dev/null"
+		      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1 --container-definitions "$(sed -i "s/IMAGE_NAME/${REPOSITORY_URI}:${latestTag}/g" task-definition.json)" > /dev/null"
 // 		      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1 --family inn-dev-td-0e6cf42e2321 --network-mode bridge --container-definitions \"$(jq --arg newImage \"${REPOSITORY_URI}:${latestTag}\" '.containerDefinitions[0].image = \$newImage' task-definition.json)\" > /dev/null"
 //                       sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1 --family inn-dev-td-0e6cf42e2321 --network-mode bridge"
                  }
