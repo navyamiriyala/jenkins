@@ -69,7 +69,7 @@ pipeline {
 	      steps {
 		script {
 		    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-			  def imageTag = sh(returnStdout: true, script: 'aws ecr describe-images --repository-name ${REPOSITORY_URI} --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]"').trim()
+			  def imageTag = sh(returnStdout: true, script: 'aws ecr describe-images --repository-name ${REPOSITORY_URI} --region us-east-1 --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]"').trim()
 			  sh "aws ecr describe-repository --repository-name ${REPOSITORY_URI}"
 			  sh "docker pull ${REPOSITORY_URI}:$imageTag"
 			  def taskDefinition = sh(returnStdout: true, script: 'aws ecs describe-task-definition --task-definition task-definition --query taskDefinition').trim()
