@@ -55,7 +55,7 @@ pipeline {
 		script {
 		    def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
 		    def timestamp = sh(returnStdout: true, script: "date +'%Y-%m-%d-%H-%M-%S'").trim()
-		    sh "docker build --tag ${REPOSITORY_URI}:v${latestTag}-${timestamp} ."
+		    sh "docker build -t ${REPOSITORY_URI}:v${latestTag}-${timestamp} ."
 		    sh "docker images"
 		}
 	    } 
