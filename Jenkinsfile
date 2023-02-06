@@ -92,7 +92,8 @@ pipeline {
                    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
 		      sh "cd /var/lib/jenkins/workspace/test"
 		      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1"
-		      sh "sed -i 's/IMAGE_NAME/015838347042.dkr.ecr.us-east-1.amazonaws.com\/jenkins-test:${latestTag}/g' task-definition.json"
+		      sh "sed -i 's/IMAGE/015838347042.dkr.ecr.us-east-1.amazonaws.com\/jenkins-test:${latestTag}/g' task-definition.json"
+// 		      sh "sed -i 's/IMAGE_NAME/015838347042.dkr.ecr.us-east-1.amazonaws.com\/jenkins-test:${latestTag}/g' task-definition.json"
 // 		      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1 --family inn-dev-td-0e6cf42e2321 --network-mode bridge --container-definitions \"$(jq --arg newImage \"${REPOSITORY_URI}:${latestTag}\" '.containerDefinitions[0].image = \$newImage' task-definition.json)\" > /dev/null"
 //                       sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1 --family inn-dev-td-0e6cf42e2321 --network-mode bridge"
                  }
