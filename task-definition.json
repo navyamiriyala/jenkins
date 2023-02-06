@@ -5,7 +5,7 @@
     {
       "name": "sample",
       "memory": 300,
-      "image": "015838347042.dkr.ecr.us-east-1.amazonaws.com/cicd-deplymt:127503e",
+      "image": "IMAGE_NAME",
       "portMappings": [
         {
           "containerPort": 80,
