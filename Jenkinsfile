@@ -67,7 +67,7 @@ pipeline {
 		    def timestamp = sh(returnStdout: true, script: "date +'%Y-%m-%d-%H-%M-%S'").trim()
 		    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
 			sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
-// 			sh "docker tag ${REPOSITORY_URI}:v${latestTag}-${timestamp}"
+			sh "docker tag ${REPOSITORY_URI}:v${latestTag}-${timestamp}"
 			sh "docker push ${REPOSITORY_URI}:v${latestTag}-${timestamp}"
 		    }
 		}
