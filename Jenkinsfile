@@ -75,9 +75,7 @@ pipeline {
 			    sh "docker pull ${REPOSITORY_URI}:$imageTag"
 			    def taskDefinition = sh(returnStdout: true, script: 'aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 --query taskDefinition').trim()
 			    def newTaskDefinition = taskDefinition.replaceFirst('(?<="image": ")(.*)(?=")', "${REPOSITORY_URI}:$imageTag")
-	// 		     Use the `json` module to format `newTaskDefinition` as a valid JSON document
 			    formattedTaskDefinition = json.loads(newTaskDefinition)
-		   }
 			    with open('newTaskDefinition.json', 'w') as outfile:
 				json.dump(formattedTaskDefinition, outfile, indent=4)
 			    sh "cat newTaskDefinition.json"
@@ -85,8 +83,8 @@ pipeline {
 			    sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321"
 		  }
 	       }
-             }
-// 	  }
+            }
+	}
 //         stage("Update ECS Task Definition") {
 //             steps {
 // 		script {
