@@ -55,11 +55,12 @@ pipeline {
 		script {
 		    def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
 		    def timestamp = sh(returnStdout: true, script: "date +'%Y-%m-%d-%H-%M-%S'").trim()
-		    sh "docker build -t ${REPOSITORY_URI}:v${latestTag}-${timestamp} ."
+		    def TAG = v${latestTag}-${timestamp}
+		    sh "docker build -t ${REPOSITORY_URI}:${TAG} ."
 		    sh "docker images"
 	            withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
 			sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 015838347042.dkr.ecr.us-east-1.amazonaws.com'
-			sh "docker push ${REPOSITORY_URI}:v${latestTag}-${timestamp}"
+			sh "docker push ${REPOSITORY_URI}:${TAG}"
 		}
 	     } 
 	  }
