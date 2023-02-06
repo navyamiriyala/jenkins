@@ -54,8 +54,8 @@ pipeline {
 	    steps {
 		script {
 		    def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
-		    def timestamp = sh(returnStdout: true, script: "date +'%Y-%m-%d-%H-%M-%S'").trim()
-		    def TAG = ${latestTag}-${timestamp}
+// 		    def timestamp = sh(returnStdout: true, script: "date +'%Y-%m-%d-%H-%M-%S'").trim()
+		    def TAG = ${latestTag}
 		    sh "docker build -t ${REPOSITORY_URI}:${TAG} ."
 		    sh "docker images"
 	            withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
