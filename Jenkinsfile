@@ -68,22 +68,21 @@ pipeline {
 	  stage('Pull and Deploy ECR Image') {
 	      steps {
 		script {
-		  def imageTag = sh(returnStdout: true, script: 'aws ecr describe-images --repository-name my-repo --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]"').trim()
-		  sh "aws ecr describe-repository --repository-name my-repo"
-		  sh "docker pull ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/my-repo:$imageTag"
-
-		  def taskDefinition = sh(returnStdout: true, script: 'aws ecs describe-task-definition --task-definition my-task-definition --query taskDefinition').trim()
-		  def newTaskDefinition = taskDefinition.replaceAll('(?<="image": ")(.*)(?=")', "${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/my-repo:$imageTag")
-		  sh "echo $newTaskDefinition > newTaskDefinition.json"
-		  sh "aws ecs register-task-definition --cli-input-json file://newTaskDefinition.json"
-		  sh "aws ecs update-service --cluster my-cluster --service my-service --task-definition my-task-definition"
+		  def imageTag = sh(returnStdout: true, script: 'aws ecr describe-images --repository-name ${REPOSITORY_URI} --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]"').trim()
+		    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
+			  sh "aws ecr describe-repository --repository-name ${REPOSITORY_URI}"
+			  sh "docker pull ${REPOSITORY_URI}:$imageTag"
+			  def taskDefinition = sh(returnStdout: true, script: 'aws ecs describe-task-definition --task-definition task-definition --query taskDefinition').trim()
+			  def newTaskDefinition = taskDefinition.replaceAll('(?<="image": ")(.*)(?=")', "${REPOSITORY_URI}:$imageTag")
+			  sh "echo $newTaskDefinition > newTaskDefinition.json"
+			  sh "aws ecs register-task-definition --cli-input-json file://newTaskDefinition.json"
+			  sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321"
+		    }
 		}
 	      }
 	 }
      }
 }
-
-
 //         stage("Update ECS Task Definition") {
 //             steps {
 // 		script {
