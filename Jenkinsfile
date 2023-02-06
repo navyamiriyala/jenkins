@@ -77,6 +77,7 @@ pipeline {
 			    def newTaskDefinition = taskDefinition.replaceFirst('(?<="image": ")(.*)(?=")', "${REPOSITORY_URI}:$imageTag")
 	// 		     Use the `json` module to format `newTaskDefinition` as a valid JSON document
 			    formattedTaskDefinition = json.loads(newTaskDefinition)
+		   }
 			    with open('newTaskDefinition.json', 'w') as outfile:
 				json.dump(formattedTaskDefinition, outfile, indent=4)
 			    sh "cat newTaskDefinition.json"
@@ -85,7 +86,7 @@ pipeline {
 		  }
 	       }
              }
-	  }
+// 	  }
 //         stage("Update ECS Task Definition") {
 //             steps {
 // 		script {
