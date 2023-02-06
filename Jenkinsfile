@@ -72,7 +72,7 @@ pipeline {
 			  def imageTag = sh(returnStdout: true, script: 'aws ecr describe-images --repository-name jenkins-test --region us-east-1 --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]"').trim()
 			  sh "aws ecr describe-repositories --repository-name jenkins-test"
 			  sh "docker pull ${REPOSITORY_URI}:$imageTag"
-			  def taskDefinition = sh(returnStdout: true, script: 'aws ecs describe-task-definition --task-definition task-definition --query taskDefinition').trim()
+			  def taskDefinition = sh(returnStdout: true, script: 'aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 --query taskDefinition').trim()
 			  def newTaskDefinition = taskDefinition.replaceAll('(?<="image": ")(.*)(?=")', "${REPOSITORY_URI}:$imageTag")
 			  sh "echo $newTaskDefinition > newTaskDefinition.json"
 			  sh "aws ecs register-task-definition --cli-input-json file://newTaskDefinition.json"
