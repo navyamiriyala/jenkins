@@ -101,7 +101,7 @@ pipeline {
             }
         }
         stage("Update ECS Service") {
-            steps {ws ecs register-task-definition --cli-input-json "$(jq --arg image '015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins-test:latest' '.containerDefinitions[0].image=$image' task-definition.json)" --region us-east-1
+            steps {
                 withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
                   sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321:28 --force-new-deployment --region us-east-1"
              }
