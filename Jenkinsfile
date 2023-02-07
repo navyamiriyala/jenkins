@@ -54,7 +54,6 @@ pipeline {
 	    steps {
 		script {
 		    def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
-// 		    def timestamp = sh(returnStdout: true, script: "date +'%Y-%m-%d-%H-%M-%S'").trim()
 		    def TAG = "${latestTag}"
 		    sh "docker build -t ${REPOSITORY_URI}:${TAG} ."
 		    sh "docker images"
@@ -65,26 +64,6 @@ pipeline {
 	     } 
 	  }
        }	
-// 	  stage('Pull and Deploy ECR Image') {
-// 	    steps {
-// 		script {
-// 		    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-// 			def imageTag = sh(returnStdout: true, script: 'aws ecr describe-images --repository-name jenkins-test --region us-east-1 --query "sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]"').trim()
-// 			sh "aws ecr describe-repositories --repository-name jenkins-test"
-// 			sh "docker pull ${REPOSITORY_URI}:$imageTag"
-// 			def taskDefinition = sh(returnStdout: true, script: 'aws ecs describe-task-definition --task-definition inn-dev-td-0e6cf42e2321 --query taskDefinition').trim()
-// 			def newTaskDefinition = taskDefinition.replaceFirst('(?<="image": ".*:)(.*)(?=")',  "${1}", "${REPOSITORY_URI}:$imageTag")
-// 			sh "echo '$newTaskDefinition' > newTaskDefinition.json"
-// // 			newTaskDefinition = newTaskDefinition.replace("\\", "")
-// // 			def parsedJson = readJSON text: newTaskDefinition
-// // 			writeJSON file: 'newTaskDefinition.json', json: parsedJson
-// 			sh "cat newTaskDefinition.json"
-// 			sh "aws ecs register-task-definition --cli-input-json file://newTaskDefinition.json"
-// 			sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321"
-// 		    }
-// 		}
-// 	    }
-// 	}
         stage("Update ECS Task Definition") {
             steps {
 		script {
