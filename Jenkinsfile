@@ -91,11 +91,11 @@ pipeline {
 		   def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
                    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
 		      sh "cd /var/lib/jenkins/workspace/test"
-// 		      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1"
-// 		      sh "sed -i 's/IMAGE/015838347042.dkr.ecr.us-east-1.amazonaws.com\/jenkins-test:${latestTag}/g' task-definition.json"
+		      sh "sed -i 's/IMAGE/015838347042.dkr.ecr.us-east-1.amazonaws.com\/jenkins-test:${latestTag}/g' task-definition.json"
+		      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1"
 // 		      sh "sed -i 's/IMAGE_NAME/015838347042.dkr.ecr.us-east-1.amazonaws.com\/jenkins-test:${latestTag}/g' task-definition.json"
 // 		      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1 --container-definitions \"$(jq --arg newImage \"${REPOSITORY_URI}:${latestTag}\" '.containerDefinitions[0].image = \$newImage' task-definition.json)\" > /dev/null"
-                      sh "aws ecs register-task-definition --cli-input-json "$(jq --arg image '015838347042.dkr.ecr.us-east-1.amazonaws.com:${latestTag}' '.containerDefinitions[0].image=$image' task-definition.json)" --region us-east-1"
+//                       sh "aws ecs register-task-definition --cli-input-json "$(jq --arg image '015838347042.dkr.ecr.us-east-1.amazonaws.com:${latestTag}' '.containerDefinitions[0].image=$image' task-definition.json)" --region us-east-1"
                  }
 	       }
             }
