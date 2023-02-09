@@ -1,0 +1,22 @@
+{
+  "family": "task_def_ecs_fargate_jenkins",
+  "executionRoleArn": "arn:aws:iam::015838347042:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "cpu": "1024",
+  "memory": "2048"
+  "containerDefinitions": [
+    {
+      "name": "sample-web-app",
+      "image": "IMAGE_NAME",
+      "portMappings": [
+        {
+          "name": "sample-web-app-80-tcp",
+          "containerPort": 80,
+          "hostPort": 80,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ]
+    }
+  ]
+}
