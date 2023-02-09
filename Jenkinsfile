@@ -69,8 +69,9 @@ pipeline {
 		   def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags || echo "0.0.0"').trim()
                    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
 		      sh "cd /var/lib/jenkins/workspace/test"
-		      sh "sed -i 's|IMAGE_NAME|${REPOSITORY_URI}:${latestTag}|g' task-definition.json"
-		      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1"
+		      sh "sed -i 's|IMAGE_NAME|${REPOSITORY_URI}:${latestTag}|g' fargatetaskdefinition.json"
+		      sh "aws ecs register-task-definition --cli-input-json file://fargatetaskdefinition.json --network-mode awsvpc --requires-compatibilities FARGATE --regionus-east-1"
+// 		      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1"
                  }
 	       }
             }
@@ -78,7 +79,8 @@ pipeline {
         stage("Update ECS Service") {
             steps {
                 withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
-                  sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321 --force-new-deployment --region us-east-1"
+	          sh "aws ecs update-service --cluster cluster_test_jenkins --service service_test_jenkins --task-definition task_def_ecs_fargate_jenkins --force-new-deployment --region us-east-1"
+//                   sh "aws ecs update-service --cluster inn-dev-cluster-0e6cf42e2321 --service inn-dev-service-0e6cf42e2321 --task-definition inn-dev-td-0e6cf42e2321 --force-new-deployment --region us-east-1"
              }
           }
         }
