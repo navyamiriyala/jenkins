@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        version = "v4.0.0"
+        version = "v5.0.0"
         github_org = "navyamiriyala"
         repository = "jenkins"
 	REPOSITORY_URI= "015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins-test"
