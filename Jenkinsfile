@@ -70,7 +70,7 @@ pipeline {
                    withCredentials([aws(credentialsId: 'AWS_ACCESS_KEY_ID', region: 'us-east-1')]) {
 		      sh "cd /var/lib/jenkins/workspace/test"
 		      sh "sed -i 's|IMAGE_NAME|${REPOSITORY_URI}:${latestTag}|g' fargatetaskdefinition.json"
-		      sh "aws ecs register-task-definition --cli-input-json file://fargatetaskdefinition.json --network-mode awsvpc --requires-compatibilities FARGATE --regionus-east-1"
+		      sh "aws ecs register-task-definition --cli-input-json file://fargatetaskdefinition.json --network-mode awsvpc --requires-compatibilities FARGATE --region us-east-1"
 // 		      sh "aws ecs register-task-definition --cli-input-json file://task-definition.json --region us-east-1"
                  }
 	       }
