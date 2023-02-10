@@ -3,7 +3,7 @@ pipeline {
     environment {
         VERSION = "v5.0.0"
         GITHUB_ORG= "navyamiriyala"
-        REPOSITORY = "jenkins"
+        REPOSITORY = "jenkins-code"
 	REPOSITORY_URI= "015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins-test"
 	CLUSTER_NAME= "cluster_test_jenkins"
 	SERVICE_NAME= "service_test_jenkins"
@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '90cb8647-93b7-4c21-93c0-a57e62d18756', url: 'https://github.com/navyamiriyala/jenkins.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '90cb8647-93b7-4c21-93c0-a57e62d18756', url: 'https://github.com/continuuminnovations-com/jenkins-code.git']]])
             }
         }
         stage('Create and Push Git Tag') {
