@@ -6,7 +6,7 @@ pipeline {
         REPOSITORY = "jenkins"
 	REPOSITORY_URI= "015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins-test"
 	CLUSTER_NAME= "cluster_test_jenkins"
-	SERVICE_NAME= "service_test_jenkins
+	SERVICE_NAME= "service_test_jenkins"
 	TASK_DEFINTION_NAME="task_def_ecs_fargate_jenkins"
     }
     stages {
