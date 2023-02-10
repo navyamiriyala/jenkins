@@ -36,7 +36,7 @@ pipeline {
                     // Retrieve the latest tag from the GitHub repository
                     def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
                     echo "Latest tag: ${latestTag}"
-                    withCredentials([string(credentialsId: 'github-pat', variable: 'PAT')]) {
+                    withCredentials([string(credentialsId: 'GITHUB-PAT', variable: 'PAT')]) {
                        sh "curl -X POST -H 'Authorization: token ${PAT}' -H 'Content-Type: application/json' -d '{\"tag_name\":\"${latestTag}\",\"target_commitish\": \"main\",\"name\": \"${latestTag}\",\"body\": \"Release created by Jenkins\",\"draft\": false,\"prerelease\": false}' https://api.github.com/repos/${GITHUB_ORG}/${REPOSITORY}/releases"
                     }
                 }
