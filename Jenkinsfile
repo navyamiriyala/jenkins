@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         VERSION = "v5.0.0"
-        GITHUB-ORG= "navyamiriyala"
+        GITHUB_ORG= "navyamiriyala"
         REPOSITORY = "jenkins"
 	REPOSITORY_URI= "015838347042.dkr.ecr.us-east-1.amazonaws.com/jenkins-test"
 	CLUSTER_NAME= "cluster_test_jenkins"
@@ -37,7 +37,7 @@ pipeline {
                     def latestTag = sh(returnStdout: true, script: 'git describe --abbrev=0 --tags').trim()
                     echo "Latest tag: ${latestTag}"
                     withCredentials([string(credentialsId: 'github-pat', variable: 'PAT')]) {
-                    sh "curl -X POST -H 'Authorization: token ${PAT}' -H 'Content-Type: application/json' -d '{\"tag_name\":\"${latestTag}\",\"target_commitish\": \"main\",\"name\": \"${latestTag}\",\"body\": \"Release created by Jenkins\",\"draft\": false,\"prerelease\": false}' https://api.github.com/repos/${GITHUB-ORG}/${REPOSITORY}/releases"
+                    sh "curl -X POST -H 'Authorization: token ${PAT}' -H 'Content-Type: application/json' -d '{\"tag_name\":\"${latestTag}\",\"target_commitish\": \"main\",\"name\": \"${latestTag}\",\"body\": \"Release created by Jenkins\",\"draft\": false,\"prerelease\": false}' https://api.github.com/repos/${GITHUB_ORG}/${REPOSITORY}/releases"
                     }
                 }
             }
